@@ -35,14 +35,9 @@
             this.comboBoxPoort = new System.Windows.Forms.ComboBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageInstellingen = new System.Windows.Forms.TabPage();
-            this.listBoxResponses = new System.Windows.Forms.ListBox();
-            this.labelResponses = new System.Windows.Forms.Label();
             this.checkBoxDtrEnable = new System.Windows.Forms.CheckBox();
             this.checkBoxRtsEnable = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.textBoxCommand = new System.Windows.Forms.TextBox();
-            this.buttonSend = new System.Windows.Forms.Button();
-            this.labelCommand = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.radioButtonHandshakeXonXoff = new System.Windows.Forms.RadioButton();
             this.radioButtonHandshakeRTSXonXoff = new System.Windows.Forms.RadioButton();
@@ -183,14 +178,9 @@
             // 
             // tabPageInstellingen
             // 
-            this.tabPageInstellingen.Controls.Add(this.listBoxResponses);
-            this.tabPageInstellingen.Controls.Add(this.labelResponses);
             this.tabPageInstellingen.Controls.Add(this.checkBoxDtrEnable);
             this.tabPageInstellingen.Controls.Add(this.checkBoxRtsEnable);
             this.tabPageInstellingen.Controls.Add(this.label8);
-            this.tabPageInstellingen.Controls.Add(this.textBoxCommand);
-            this.tabPageInstellingen.Controls.Add(this.buttonSend);
-            this.tabPageInstellingen.Controls.Add(this.labelCommand);
             this.tabPageInstellingen.Controls.Add(this.groupBox3);
             this.tabPageInstellingen.Controls.Add(this.label7);
             this.tabPageInstellingen.Controls.Add(this.groupBox2);
@@ -208,26 +198,6 @@
             this.tabPageInstellingen.TabIndex = 2;
             this.tabPageInstellingen.Text = "Instellingen";
             this.tabPageInstellingen.UseVisualStyleBackColor = true;
-            // 
-            // listBoxResponses
-            // 
-            this.listBoxResponses.FormattingEnabled = true;
-            this.listBoxResponses.ItemHeight = 16;
-            this.listBoxResponses.Location = new System.Drawing.Point(140, 470);
-            this.listBoxResponses.Margin = new System.Windows.Forms.Padding(4);
-            this.listBoxResponses.Name = "listBoxResponses";
-            this.listBoxResponses.Size = new System.Drawing.Size(410, 100);
-            this.listBoxResponses.TabIndex = 5;
-            // 
-            // labelResponses
-            // 
-            this.labelResponses.AutoSize = true;
-            this.labelResponses.Location = new System.Drawing.Point(52, 472);
-            this.labelResponses.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelResponses.Name = "labelResponses";
-            this.labelResponses.Size = new System.Drawing.Size(77, 16);
-            this.labelResponses.TabIndex = 6;
-            this.labelResponses.Text = "Responses";
             // 
             // checkBoxDtrEnable
             // 
@@ -260,36 +230,6 @@
             this.label8.Size = new System.Drawing.Size(77, 16);
             this.label8.TabIndex = 9;
             this.label8.Text = "Handshake";
-            // 
-            // textBoxCommand
-            // 
-            this.textBoxCommand.Location = new System.Drawing.Point(140, 435);
-            this.textBoxCommand.Margin = new System.Windows.Forms.Padding(4);
-            this.textBoxCommand.Name = "textBoxCommand";
-            this.textBoxCommand.Size = new System.Drawing.Size(300, 22);
-            this.textBoxCommand.TabIndex = 2;
-            this.textBoxCommand.Text = "ping";
-            // 
-            // buttonSend
-            // 
-            this.buttonSend.Location = new System.Drawing.Point(450, 435);
-            this.buttonSend.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonSend.Name = "buttonSend";
-            this.buttonSend.Size = new System.Drawing.Size(100, 28);
-            this.buttonSend.TabIndex = 3;
-            this.buttonSend.Text = "Send";
-            this.buttonSend.UseVisualStyleBackColor = true;
-            this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
-            // 
-            // labelCommand
-            // 
-            this.labelCommand.AutoSize = true;
-            this.labelCommand.Location = new System.Drawing.Point(52, 438);
-            this.labelCommand.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelCommand.Name = "labelCommand";
-            this.labelCommand.Size = new System.Drawing.Size(69, 16);
-            this.labelCommand.TabIndex = 4;
-            this.labelCommand.Text = "Command";
             // 
             // groupBox3
             // 
@@ -1015,11 +955,6 @@
         internal System.Windows.Forms.NumericUpDown numericUpDownDatabits;
         internal System.Windows.Forms.ComboBox comboBoxBaudrate;
         internal System.Windows.Forms.Label label4;
-        internal System.Windows.Forms.TextBox textBoxCommand;
-        internal System.Windows.Forms.Button buttonSend;
-        internal System.Windows.Forms.Label labelCommand;
-        internal System.Windows.Forms.ListBox listBoxResponses;
-        internal System.Windows.Forms.Label labelResponses;
         internal System.Windows.Forms.TabPage tabPageOefening1;
         internal System.Windows.Forms.PictureBox pictureBox1;
         internal System.Windows.Forms.CheckBox checkBoxDigital4;
