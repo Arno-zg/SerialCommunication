@@ -104,7 +104,7 @@ namespace SerialCommunication
             serialPortArduino.DtrEnable = checkBoxDtrEnable.Checked;
 
             // Register DataReceived event handler
-            serialPortArduino.DataReceived += SerialPortArduino_DataReceived;
+            //serialPortArduino.DataReceived += SerialPortArduino_DataReceived;
 
             // Open the connection
             serialPortArduino.Open();
@@ -118,7 +118,7 @@ namespace SerialCommunication
         private void DisconnectSerialPort()
         {
             // Unregister DataReceived event handler
-            serialPortArduino.DataReceived -= SerialPortArduino_DataReceived;
+            //serialPortArduino.DataReceived -= SerialPortArduino_DataReceived;
 
             // Close the connection
             serialPortArduino.Close();
@@ -156,7 +156,7 @@ namespace SerialCommunication
                 labelStatus.Text = "Error: " + exception.Message;
             }
         }
-
+        /*
         private void SerialPortArduino_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -170,6 +170,7 @@ namespace SerialCommunication
             }
             catch { }
         }
+        */
 
         private void checkBoxDigital2_CheckedChanged(object sender, EventArgs e)
         {
@@ -327,6 +328,7 @@ namespace SerialCommunication
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             timerOefening3.Enabled = (tabControl.SelectedIndex == 3);
+            timerOefening4.Enabled = (tabControl.SelectedIndex == 4);
         }
 
         private void timerOefening3_Tick(object sender, EventArgs e)
@@ -350,19 +352,47 @@ namespace SerialCommunication
                     string responsed6 = serialPortArduino.ReadLine();
                     responsed6 = responsed6.TrimEnd();
                     responsed6 = responsed6.Substring(4);
-                    radioButtonDigital5.Checked = (responsed6 == "1");
+                    radioButtonDigital6.Checked = (responsed6 == "1");
 
                     serialPortArduino.ReadExisting(); //clear input buffer
                     string commandod7 = "get d7";
-                    serialPortArduino.WriteLine(commandod6);
+                    serialPortArduino.WriteLine(commandod7);
                     string responsed7 = serialPortArduino.ReadLine();
                     responsed7 = responsed7.TrimEnd();
                     responsed7 = responsed7.Substring(4);
-                    radioButtonDigital5.Checked = (responsed7 == "1");
+                    radioButtonDigital7.Checked = (responsed7 == "1");
 
 
                 }
             }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+            }
+        }
+
+        private void timerOefening4_Tick(object sender, EventArgs e)
+        {
+            try 
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    serialPortArduino.ReadExisting(); //clear input buffer
+                    string commando = "get a0";
+                    serialPortArduino.WriteLine(commando);
+                    string antwoord = serialPortArduino.ReadLine();
+                    antwoord = antwoord.TrimEnd();
+                    antwoord = antwoord.Substring(4);
+                    
+                    int value = Int32.Parse(antwoord);
+                    labelAnalog0.Text = value.ToString();
+                    
+                }
+            }
+
             catch (Exception exception)
             {
                 labelStatus.Text = "Error: " + exception.Message;
