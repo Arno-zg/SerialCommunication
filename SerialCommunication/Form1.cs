@@ -103,6 +103,9 @@ namespace SerialCommunication
             serialPortArduino.RtsEnable = checkBoxRtsEnable.Checked;
             serialPortArduino.DtrEnable = checkBoxDtrEnable.Checked;
 
+            // Register DataReceived event handler
+            serialPortArduino.DataReceived += SerialPortArduino_DataReceived;
+
             // Open the connection
             serialPortArduino.Open();
 
@@ -114,6 +117,9 @@ namespace SerialCommunication
 
         private void DisconnectSerialPort()
         {
+            // Unregister DataReceived event handler
+            serialPortArduino.DataReceived -= SerialPortArduino_DataReceived;
+
             // Close the connection
             serialPortArduino.Close();
 
@@ -121,6 +127,48 @@ namespace SerialCommunication
             radioButtonVerbonden.Checked = false;
             buttonConnect.Text = "Connect";
             labelStatus.Text = "Disconnected";
+        }
+
+        private void buttonSend_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    string command = textBoxCommand.Text.Trim();
+                    if (!string.IsNullOrEmpty(command))
+                    {
+                        serialPortArduino.WriteLine(command);
+                        labelStatus.Text = "Sent: " + command;
+                    }
+                    else
+                    {
+                        labelStatus.Text = "Error: Command cannot be empty";
+                    }
+                }
+                else
+                {
+                    labelStatus.Text = "Error: Not connected to serial port";
+                }
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+            }
+        }
+
+        private void SerialPortArduino_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                string data = serialPortArduino.ReadLine();
+                this.Invoke(new MethodInvoker(delegate
+                {
+                    listBoxResponses.Items.Add("Response: " + data);
+                    listBoxResponses.TopIndex = listBoxResponses.Items.Count - 1;
+                }));
+            }
+            catch { }
         }
 
         private void checkBoxDigital2_CheckedChanged(object sender, EventArgs e)
@@ -223,13 +271,13 @@ namespace SerialCommunication
         {
             try
             {
-                if (serialPortArduino.IsOpen) 
+                if (serialPortArduino.IsOpen)
                 {
-                    string commando =String.Format("set pwm9 {0}", trackBarPWM9.Value); //set pwm9 0...255
+                    string commando = String.Format("set pwm9 {0}", trackBarPWM9.Value); //set pwm9 0...255
                     serialPortArduino.WriteLine(commando);
                 }
             }
-            catch (Exception exception) 
+            catch (Exception exception)
             {
                 labelStatus.Text = "Error: " + exception.Message;
                 serialPortArduino.Close();
@@ -276,5 +324,4 @@ namespace SerialCommunication
             }
         }
     }
-    }
-
+}
