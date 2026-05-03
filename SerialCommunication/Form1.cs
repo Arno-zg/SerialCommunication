@@ -323,6 +323,54 @@ namespace SerialCommunication
                 buttonConnect.Text = "Connect";
             }
         }
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            timerOefening3.Enabled = (tabControl.SelectedIndex == 3);
+        }
+
+        private void timerOefening3_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    
+                    serialPortArduino.ReadExisting(); //clear input buffer
+                    string commandod5 = "get d5";
+                    serialPortArduino.WriteLine(commandod5);
+                    string responsed5 = serialPortArduino.ReadLine();
+                    responsed5 = responsed5.TrimEnd();
+                    responsed5 = responsed5.Substring(4);
+                    radioButtonDigital5.Checked = (responsed5 == "1");
+
+                    serialPortArduino.ReadExisting(); //clear input buffer
+                    string commandod6 = "get d6";
+                    serialPortArduino.WriteLine(commandod6);
+                    string responsed6 = serialPortArduino.ReadLine();
+                    responsed6 = responsed6.TrimEnd();
+                    responsed6 = responsed6.Substring(4);
+                    radioButtonDigital5.Checked = (responsed6 == "1");
+
+                    serialPortArduino.ReadExisting(); //clear input buffer
+                    string commandod7 = "get d7";
+                    serialPortArduino.WriteLine(commandod6);
+                    string responsed7 = serialPortArduino.ReadLine();
+                    responsed7 = responsed7.TrimEnd();
+                    responsed7 = responsed7.Substring(4);
+                    radioButtonDigital5.Checked = (responsed7 == "1");
+
+
+                }
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+            }
+        }
     }
     }
 

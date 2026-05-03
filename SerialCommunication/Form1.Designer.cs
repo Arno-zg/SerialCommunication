@@ -95,6 +95,7 @@
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.serialPortArduino = new System.IO.Ports.SerialPort(this.components);
+            this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -122,10 +123,10 @@
             this.radioButtonVerbonden.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.radioButtonVerbonden.AutoCheck = false;
             this.radioButtonVerbonden.AutoSize = true;
-            this.radioButtonVerbonden.Location = new System.Drawing.Point(974, 17);
+            this.radioButtonVerbonden.Location = new System.Drawing.Point(977, 17);
             this.radioButtonVerbonden.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonVerbonden.Name = "radioButtonVerbonden";
-            this.radioButtonVerbonden.Size = new System.Drawing.Size(93, 20);
+            this.radioButtonVerbonden.Size = new System.Drawing.Size(90, 20);
             this.radioButtonVerbonden.TabIndex = 8;
             this.radioButtonVerbonden.TabStop = true;
             this.radioButtonVerbonden.Text = "verbonden";
@@ -174,12 +175,13 @@
             this.tabControl.Controls.Add(this.tabPageOefening3);
             this.tabControl.Controls.Add(this.tabPageOefening4);
             this.tabControl.Controls.Add(this.tabPageOefening5);
-            this.tabControl.Location = new System.Drawing.Point(16, 65);
+            this.tabControl.Location = new System.Drawing.Point(16, 70);
             this.tabControl.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1051, 532);
             this.tabControl.TabIndex = 9;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPageInstellingen
             // 
@@ -235,7 +237,7 @@
             this.checkBoxDtrEnable.Location = new System.Drawing.Point(529, 402);
             this.checkBoxDtrEnable.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxDtrEnable.Name = "checkBoxDtrEnable";
-            this.checkBoxDtrEnable.Size = new System.Drawing.Size(104, 20);
+            this.checkBoxDtrEnable.Size = new System.Drawing.Size(101, 20);
             this.checkBoxDtrEnable.TabIndex = 11;
             this.checkBoxDtrEnable.Text = "DTR Enable";
             this.checkBoxDtrEnable.UseVisualStyleBackColor = true;
@@ -246,7 +248,7 @@
             this.checkBoxRtsEnable.Location = new System.Drawing.Point(140, 402);
             this.checkBoxRtsEnable.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxRtsEnable.Name = "checkBoxRtsEnable";
-            this.checkBoxRtsEnable.Size = new System.Drawing.Size(103, 20);
+            this.checkBoxRtsEnable.Size = new System.Drawing.Size(100, 20);
             this.checkBoxRtsEnable.TabIndex = 10;
             this.checkBoxRtsEnable.Text = "RTS Enable";
             this.checkBoxRtsEnable.UseVisualStyleBackColor = true;
@@ -311,7 +313,7 @@
             this.radioButtonHandshakeXonXoff.Location = new System.Drawing.Point(396, 23);
             this.radioButtonHandshakeXonXoff.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonHandshakeXonXoff.Name = "radioButtonHandshakeXonXoff";
-            this.radioButtonHandshakeXonXoff.Size = new System.Drawing.Size(73, 20);
+            this.radioButtonHandshakeXonXoff.Size = new System.Drawing.Size(70, 20);
             this.radioButtonHandshakeXonXoff.TabIndex = 3;
             this.radioButtonHandshakeXonXoff.TabStop = true;
             this.radioButtonHandshakeXonXoff.Text = "XonXoff";
@@ -323,7 +325,7 @@
             this.radioButtonHandshakeRTSXonXoff.Location = new System.Drawing.Point(239, 23);
             this.radioButtonHandshakeRTSXonXoff.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonHandshakeRTSXonXoff.Name = "radioButtonHandshakeRTSXonXoff";
-            this.radioButtonHandshakeRTSXonXoff.Size = new System.Drawing.Size(101, 20);
+            this.radioButtonHandshakeRTSXonXoff.Size = new System.Drawing.Size(98, 20);
             this.radioButtonHandshakeRTSXonXoff.TabIndex = 2;
             this.radioButtonHandshakeRTSXonXoff.TabStop = true;
             this.radioButtonHandshakeRTSXonXoff.Text = "RTSXonXoff";
@@ -335,7 +337,7 @@
             this.radioButtonHandshakeRTS.Location = new System.Drawing.Point(132, 23);
             this.radioButtonHandshakeRTS.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonHandshakeRTS.Name = "radioButtonHandshakeRTS";
-            this.radioButtonHandshakeRTS.Size = new System.Drawing.Size(56, 20);
+            this.radioButtonHandshakeRTS.Size = new System.Drawing.Size(53, 20);
             this.radioButtonHandshakeRTS.TabIndex = 1;
             this.radioButtonHandshakeRTS.TabStop = true;
             this.radioButtonHandshakeRTS.Text = "RTS";
@@ -348,7 +350,7 @@
             this.radioButtonHandshakeNone.Location = new System.Drawing.Point(20, 23);
             this.radioButtonHandshakeNone.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonHandshakeNone.Name = "radioButtonHandshakeNone";
-            this.radioButtonHandshakeNone.Size = new System.Drawing.Size(61, 20);
+            this.radioButtonHandshakeNone.Size = new System.Drawing.Size(58, 20);
             this.radioButtonHandshakeNone.TabIndex = 0;
             this.radioButtonHandshakeNone.TabStop = true;
             this.radioButtonHandshakeNone.Text = "None";
@@ -384,7 +386,7 @@
             this.radioButtonStopbitsTwo.Location = new System.Drawing.Point(311, 23);
             this.radioButtonStopbitsTwo.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonStopbitsTwo.Name = "radioButtonStopbitsTwo";
-            this.radioButtonStopbitsTwo.Size = new System.Drawing.Size(35, 20);
+            this.radioButtonStopbitsTwo.Size = new System.Drawing.Size(32, 20);
             this.radioButtonStopbitsTwo.TabIndex = 3;
             this.radioButtonStopbitsTwo.TabStop = true;
             this.radioButtonStopbitsTwo.Text = "2";
@@ -396,7 +398,7 @@
             this.radioButtonStopbitsOnePointFive.Location = new System.Drawing.Point(211, 23);
             this.radioButtonStopbitsOnePointFive.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonStopbitsOnePointFive.Name = "radioButtonStopbitsOnePointFive";
-            this.radioButtonStopbitsOnePointFive.Size = new System.Drawing.Size(45, 20);
+            this.radioButtonStopbitsOnePointFive.Size = new System.Drawing.Size(42, 20);
             this.radioButtonStopbitsOnePointFive.TabIndex = 2;
             this.radioButtonStopbitsOnePointFive.TabStop = true;
             this.radioButtonStopbitsOnePointFive.Text = "1.5";
@@ -409,7 +411,7 @@
             this.radioButtonStopbitsOne.Location = new System.Drawing.Point(119, 23);
             this.radioButtonStopbitsOne.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonStopbitsOne.Name = "radioButtonStopbitsOne";
-            this.radioButtonStopbitsOne.Size = new System.Drawing.Size(35, 20);
+            this.radioButtonStopbitsOne.Size = new System.Drawing.Size(32, 20);
             this.radioButtonStopbitsOne.TabIndex = 1;
             this.radioButtonStopbitsOne.TabStop = true;
             this.radioButtonStopbitsOne.Text = "1";
@@ -421,7 +423,7 @@
             this.radioButtonStopbitsNone.Location = new System.Drawing.Point(20, 23);
             this.radioButtonStopbitsNone.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonStopbitsNone.Name = "radioButtonStopbitsNone";
-            this.radioButtonStopbitsNone.Size = new System.Drawing.Size(35, 20);
+            this.radioButtonStopbitsNone.Size = new System.Drawing.Size(32, 20);
             this.radioButtonStopbitsNone.TabIndex = 0;
             this.radioButtonStopbitsNone.TabStop = true;
             this.radioButtonStopbitsNone.Text = "0";
@@ -458,7 +460,7 @@
             this.radioButtonParitySpace.Location = new System.Drawing.Point(408, 23);
             this.radioButtonParitySpace.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonParitySpace.Name = "radioButtonParitySpace";
-            this.radioButtonParitySpace.Size = new System.Drawing.Size(68, 20);
+            this.radioButtonParitySpace.Size = new System.Drawing.Size(65, 20);
             this.radioButtonParitySpace.TabIndex = 4;
             this.radioButtonParitySpace.TabStop = true;
             this.radioButtonParitySpace.Text = "Space";
@@ -470,7 +472,7 @@
             this.radioButtonParityMark.Location = new System.Drawing.Point(311, 23);
             this.radioButtonParityMark.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonParityMark.Name = "radioButtonParityMark";
-            this.radioButtonParityMark.Size = new System.Drawing.Size(58, 20);
+            this.radioButtonParityMark.Size = new System.Drawing.Size(55, 20);
             this.radioButtonParityMark.TabIndex = 3;
             this.radioButtonParityMark.TabStop = true;
             this.radioButtonParityMark.Text = "Mark";
@@ -483,7 +485,7 @@
             this.radioButtonParityNone.Location = new System.Drawing.Point(211, 23);
             this.radioButtonParityNone.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonParityNone.Name = "radioButtonParityNone";
-            this.radioButtonParityNone.Size = new System.Drawing.Size(61, 20);
+            this.radioButtonParityNone.Size = new System.Drawing.Size(58, 20);
             this.radioButtonParityNone.TabIndex = 2;
             this.radioButtonParityNone.TabStop = true;
             this.radioButtonParityNone.Text = "None";
@@ -495,7 +497,7 @@
             this.radioButtonParityOdd.Location = new System.Drawing.Point(119, 23);
             this.radioButtonParityOdd.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonParityOdd.Name = "radioButtonParityOdd";
-            this.radioButtonParityOdd.Size = new System.Drawing.Size(54, 20);
+            this.radioButtonParityOdd.Size = new System.Drawing.Size(51, 20);
             this.radioButtonParityOdd.TabIndex = 1;
             this.radioButtonParityOdd.TabStop = true;
             this.radioButtonParityOdd.Text = "Odd";
@@ -507,7 +509,7 @@
             this.radioButtonParityEven.Location = new System.Drawing.Point(20, 23);
             this.radioButtonParityEven.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonParityEven.Name = "radioButtonParityEven";
-            this.radioButtonParityEven.Size = new System.Drawing.Size(59, 20);
+            this.radioButtonParityEven.Size = new System.Drawing.Size(56, 20);
             this.radioButtonParityEven.TabIndex = 0;
             this.radioButtonParityEven.TabStop = true;
             this.radioButtonParityEven.Text = "Even";
@@ -615,7 +617,7 @@
             this.checkBoxDigital4.Location = new System.Drawing.Point(45, 224);
             this.checkBoxDigital4.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxDigital4.Name = "checkBoxDigital4";
-            this.checkBoxDigital4.Size = new System.Drawing.Size(77, 20);
+            this.checkBoxDigital4.Size = new System.Drawing.Size(74, 20);
             this.checkBoxDigital4.TabIndex = 2;
             this.checkBoxDigital4.Text = "Digital 4";
             this.checkBoxDigital4.UseVisualStyleBackColor = true;
@@ -627,7 +629,7 @@
             this.checkBoxDigital3.Location = new System.Drawing.Point(44, 196);
             this.checkBoxDigital3.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxDigital3.Name = "checkBoxDigital3";
-            this.checkBoxDigital3.Size = new System.Drawing.Size(77, 20);
+            this.checkBoxDigital3.Size = new System.Drawing.Size(74, 20);
             this.checkBoxDigital3.TabIndex = 1;
             this.checkBoxDigital3.Text = "Digital 3";
             this.checkBoxDigital3.UseVisualStyleBackColor = true;
@@ -639,7 +641,7 @@
             this.checkBoxDigital2.Location = new System.Drawing.Point(44, 166);
             this.checkBoxDigital2.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxDigital2.Name = "checkBoxDigital2";
-            this.checkBoxDigital2.Size = new System.Drawing.Size(77, 20);
+            this.checkBoxDigital2.Size = new System.Drawing.Size(74, 20);
             this.checkBoxDigital2.TabIndex = 0;
             this.checkBoxDigital2.Text = "Digital 2";
             this.checkBoxDigital2.UseVisualStyleBackColor = true;
@@ -680,7 +682,7 @@
             this.trackBarPWM11.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarPWM11.Maximum = 255;
             this.trackBarPWM11.Name = "trackBarPWM11";
-            this.trackBarPWM11.Size = new System.Drawing.Size(329, 56);
+            this.trackBarPWM11.Size = new System.Drawing.Size(329, 45);
             this.trackBarPWM11.TabIndex = 4;
             this.trackBarPWM11.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarPWM11.Scroll += new System.EventHandler(this.trackBarPWM11_Scroll);
@@ -702,7 +704,7 @@
             this.trackBarPWM10.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarPWM10.Maximum = 255;
             this.trackBarPWM10.Name = "trackBarPWM10";
-            this.trackBarPWM10.Size = new System.Drawing.Size(329, 56);
+            this.trackBarPWM10.Size = new System.Drawing.Size(329, 45);
             this.trackBarPWM10.TabIndex = 2;
             this.trackBarPWM10.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarPWM10.Scroll += new System.EventHandler(this.trackBarPWM10_Scroll);
@@ -724,7 +726,7 @@
             this.trackBarPWM9.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarPWM9.Maximum = 255;
             this.trackBarPWM9.Name = "trackBarPWM9";
-            this.trackBarPWM9.Size = new System.Drawing.Size(329, 56);
+            this.trackBarPWM9.Size = new System.Drawing.Size(329, 45);
             this.trackBarPWM9.TabIndex = 0;
             this.trackBarPWM9.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarPWM9.Scroll += new System.EventHandler(this.trackBarPWM9_Scroll);
@@ -750,7 +752,7 @@
             this.tabPageOefening3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageOefening3.Name = "tabPageOefening3";
             this.tabPageOefening3.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageOefening3.Size = new System.Drawing.Size(1037, 484);
+            this.tabPageOefening3.Size = new System.Drawing.Size(1043, 503);
             this.tabPageOefening3.TabIndex = 3;
             this.tabPageOefening3.Text = "Oefening 3";
             this.tabPageOefening3.UseVisualStyleBackColor = true;
@@ -762,7 +764,7 @@
             this.radioButtonDigital7.Location = new System.Drawing.Point(65, 230);
             this.radioButtonDigital7.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonDigital7.Name = "radioButtonDigital7";
-            this.radioButtonDigital7.Size = new System.Drawing.Size(76, 20);
+            this.radioButtonDigital7.Size = new System.Drawing.Size(73, 20);
             this.radioButtonDigital7.TabIndex = 3;
             this.radioButtonDigital7.TabStop = true;
             this.radioButtonDigital7.Text = "Digital 7";
@@ -775,7 +777,7 @@
             this.radioButtonDigital6.Location = new System.Drawing.Point(65, 188);
             this.radioButtonDigital6.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonDigital6.Name = "radioButtonDigital6";
-            this.radioButtonDigital6.Size = new System.Drawing.Size(76, 20);
+            this.radioButtonDigital6.Size = new System.Drawing.Size(73, 20);
             this.radioButtonDigital6.TabIndex = 2;
             this.radioButtonDigital6.TabStop = true;
             this.radioButtonDigital6.Text = "Digital 6";
@@ -788,7 +790,7 @@
             this.radioButtonDigital5.Location = new System.Drawing.Point(65, 146);
             this.radioButtonDigital5.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonDigital5.Name = "radioButtonDigital5";
-            this.radioButtonDigital5.Size = new System.Drawing.Size(76, 20);
+            this.radioButtonDigital5.Size = new System.Drawing.Size(73, 20);
             this.radioButtonDigital5.TabIndex = 1;
             this.radioButtonDigital5.TabStop = true;
             this.radioButtonDigital5.Text = "Digital 5";
@@ -813,7 +815,7 @@
             this.tabPageOefening4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageOefening4.Name = "tabPageOefening4";
             this.tabPageOefening4.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageOefening4.Size = new System.Drawing.Size(1037, 484);
+            this.tabPageOefening4.Size = new System.Drawing.Size(1043, 503);
             this.tabPageOefening4.TabIndex = 4;
             this.tabPageOefening4.Text = "Oefening 4";
             this.tabPageOefening4.UseVisualStyleBackColor = true;
@@ -851,7 +853,7 @@
             this.tabPageOefening5.Margin = new System.Windows.Forms.Padding(4);
             this.tabPageOefening5.Name = "tabPageOefening5";
             this.tabPageOefening5.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPageOefening5.Size = new System.Drawing.Size(1037, 484);
+            this.tabPageOefening5.Size = new System.Drawing.Size(1043, 503);
             this.tabPageOefening5.TabIndex = 5;
             this.tabPageOefening5.Text = "Oefening 5";
             this.tabPageOefening5.UseVisualStyleBackColor = true;
@@ -874,7 +876,7 @@
             this.label11.Location = new System.Drawing.Point(617, 334);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(166, 20);
+            this.label11.Size = new System.Drawing.Size(134, 16);
             this.label11.TabIndex = 3;
             this.label11.Text = "Huidige Temperatuur";
             // 
@@ -896,7 +898,7 @@
             this.label9.Location = new System.Drawing.Point(617, 297);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(184, 20);
+            this.label9.Size = new System.Drawing.Size(147, 16);
             this.label9.TabIndex = 1;
             this.label9.Text = "Gewenste Temperatuur";
             // 
@@ -926,12 +928,17 @@
             // labelStatus
             // 
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(0, 16);
+            this.labelStatus.Size = new System.Drawing.Size(0, 17);
             // 
             // serialPortArduino
             // 
             this.serialPortArduino.ReadTimeout = 1000;
             this.serialPortArduino.WriteTimeout = 1000;
+            // 
+            // timerOefening3
+            // 
+            this.timerOefening3.Interval = 1000;
+            this.timerOefening3.Tick += new System.EventHandler(this.timerOefening3_Tick);
             // 
             // Form1
             // 
@@ -1050,6 +1057,7 @@
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.IO.Ports.SerialPort serialPortArduino;
+        private System.Windows.Forms.Timer timerOefening3;
     }
 }
 
