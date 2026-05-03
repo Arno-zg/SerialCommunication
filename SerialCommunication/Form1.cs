@@ -29,6 +29,18 @@ namespace SerialCommunication
                 if (comboBoxPoort.Items.Count > 0) comboBoxPoort.SelectedIndex = 0;
 
                 comboBoxBaudrate.SelectedIndex = comboBoxBaudrate.Items.IndexOf("115200");
+
+                // Start connection monitor timer
+                System.Windows.Forms.Timer connectionMonitor = new System.Windows.Forms.Timer();
+                connectionMonitor.Interval = 500; // Check every 500ms
+                connectionMonitor.Tick += (s, e2) =>
+                {
+                    if (serialPortArduino.IsOpen && !SerialPort.GetPortNames().Contains(serialPortArduino.PortName))
+                    {
+                        DisconnectArduino("Arduino connection lost: Port disconnected");
+                    }
+                };
+                connectionMonitor.Start();
             }
             catch (Exception)
             { }
@@ -182,10 +194,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -214,10 +223,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -233,10 +239,7 @@ namespace SerialCommunication
             }
             catch (Exception exception) 
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -252,10 +255,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -271,10 +271,7 @@ namespace SerialCommunication
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -289,9 +286,9 @@ namespace SerialCommunication
         {
             try
             {
-                if (serialPortArduino.IsOpen)
-                {
-                    
+                if (!IsArduinoConnected())
+                    return;
+
                     serialPortArduino.ReadExisting(); //clear input buffer
                     string commandod5 = "get d5";
                     serialPortArduino.WriteLine(commandod5);
@@ -316,15 +313,10 @@ namespace SerialCommunication
                     responsed7 = responsed7.Substring(4);
                     radioButtonDigital7.Checked = (responsed7 == "1");
 
-
-                }
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -332,8 +324,9 @@ namespace SerialCommunication
         {
             try 
             {
-                if (serialPortArduino.IsOpen)
-                {
+                if (!IsArduinoConnected())
+                    return;
+
                     serialPortArduino.ReadExisting(); //clear input buffer
                     string commando = "get a0";
                     serialPortArduino.WriteLine(commando);
@@ -343,16 +336,11 @@ namespace SerialCommunication
                     
                     int value = Int32.Parse(antwoord);
                     labelAnalog0.Text = value.ToString();
-                    
-                }
             }
 
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
         }
 
@@ -360,8 +348,9 @@ namespace SerialCommunication
         {
             try
             {
-                if (serialPortArduino.IsOpen)
-                {
+                if (!IsArduinoConnected())
+                    return;
+
                     double temperatuur = 0.0;
                     double temperatuurHuidig = 0.0;
 
@@ -395,17 +384,41 @@ namespace SerialCommunication
                     {
                         serialPortArduino.WriteLine("set d2 low");
                     }
-                }
             }
 
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                DisconnectArduino("Arduino connection lost: " + exception.Message);
             }
 
+        }
+
+        private void DisconnectArduino(string message)
+        {
+            try
+            {
+                serialPortArduino.Close();
+            }
+            catch { }
+
+            labelStatus.Text = message;
+            radioButtonVerbonden.Checked = false;
+            buttonConnect.Text = "Connect";
+        }
+
+        private bool IsArduinoConnected()
+        {
+            if (!serialPortArduino.IsOpen)
+                return false;
+
+            string[] availablePorts = SerialPort.GetPortNames();
+            if (!availablePorts.Contains(serialPortArduino.PortName))
+            {
+                DisconnectArduino("Arduino connection lost: Port no longer available");
+                return false;
+            }
+
+            return true;
         }
     }
     }
