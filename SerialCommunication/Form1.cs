@@ -133,6 +133,23 @@ namespace SerialCommunication
         {
             try
             {
+                if (serialPortArduino.IsOpen)
+                {
+                    string command = textBoxCommand.Text.Trim();
+                    if (!string.IsNullOrEmpty(command))
+                    {
+                        serialPortArduino.WriteLine(command);
+                        labelStatus.Text = "Sent: " + command;
+                    }
+                    else
+                    {
+                        labelStatus.Text = "Error: Command cannot be empty";
+                    }
+                }
+                else
+                {
+                    labelStatus.Text = "Error: Not connected to serial port";
+                }
             }
             catch (Exception exception)
             {
@@ -145,7 +162,11 @@ namespace SerialCommunication
             try
             {
                 string data = serialPortArduino.ReadLine();
-              
+                this.Invoke(new MethodInvoker(delegate
+                {
+                    listBoxResponses.Items.Add("Response: " + data);
+                    listBoxResponses.TopIndex = listBoxResponses.Items.Count - 1;
+                }));
             }
             catch { }
         }
@@ -245,5 +266,63 @@ namespace SerialCommunication
                 buttonConnect.Text = "Connect";
             }
         }
+
+        private void trackBarPWM9_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen) 
+                {
+                    string commando =String.Format("set pwm9 {0}", trackBarPWM9.Value); //set pwm9 0...255
+                    serialPortArduino.WriteLine(commando);
+                }
+            }
+            catch (Exception exception) 
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+            }
+        }
+
+        private void trackBarPWM10_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    string commando = String.Format("set pwm10 {0}", trackBarPWM10.Value); //set pwm10 0...255
+                    serialPortArduino.WriteLine(commando);
+                }
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+            }
+        }
+
+        private void trackBarPWM11_Scroll(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    string commando = String.Format("set pwm11 {0}", trackBarPWM11.Value); //set pwm10 0...255
+                    serialPortArduino.WriteLine(commando);
+                }
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+            }
+        }
     }
-}
+    }
+

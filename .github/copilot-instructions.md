@@ -1,68 +1,48 @@
 # Copilot instructions for SerialCommunication
 
-## Purpose
+Purpose
+- Short guidance for Copilot sessions working on this Arduino-based serial-communication sketch.
 
-A bidirectional serial communication project with two components:
-- **Arduino firmware**: Sketch that processes serial commands to control digital/analog I/O pins
-- **C# desktop application**: Windows Forms app that communicates with the Arduino via serial port
-
-## Build / test / lint
-
+Build / test / lint
 - No CI, test suite, or lint rules included in this repository.
+- Compile with Arduino CLI (example, set --fqbn and COM port for your board):
+  - Compile: arduino-cli compile --fqbn arduino:avr:uno "C:\Users\arno\Documents\Hogent - Arno\Technisch Programmeren\SerialCommunication\arduino\SerialCommunication"
+  - Upload:  arduino-cli upload -p COM3 --fqbn arduino:avr:uno "C:\Users\arno\Documents\Hogent - Arno\Technisch Programmeren\SerialCommunication\arduino\SerialCommunication"
+- PlatformIO (if you add platformio.ini): platformio run --project-dir arduino\SerialCommunication
+- Visual Studio: open SerialCommunication.slnx (project wraps the sketch; no automated build targets provided here).
+- Tests: none present. No single-test runner to invoke.
 
-**Arduino sketch** (arduino/SerialCommunication/):
-- Compile: `arduino-cli compile --fqbn arduino:avr:uno "C:\Users\arno\Documents\Hogent - Arno\Technisch Programmeren\SerialCommunication\arduino\SerialCommunication"`
-- Upload: `arduino-cli upload -p COM3 --fqbn arduino:avr:uno "C:\Users\arno\Documents\Hogent - Arno\Technisch Programmeren\SerialCommunication\arduino\SerialCommunication"`
-- Alternative: PlatformIO (if platformio.ini is added): `platformio run --project-dir arduino\SerialCommunication`
+High-level architecture
+- Type: Arduino sketch using an included SerialCommand library (SerialCommand.h/.cpp).
+- Entry points: SerialCommunication.ino -> setup() registers command handlers and configures pins; loop() repeatedly calls sCmd.readSerial() to process incoming serial commands.
+- Command parsing: SerialCommand tokenizes input and invokes registered handlers (onSet, onToggle, onGet, onPing, onHelp, onDebug).
+- analog.c provides analogReadDelay() used by onGet to sample analog pins with a delay.
+- Solution file SerialCommunication.slnx references a project wrapper but does not add tests or CI.
 
-**C# desktop application** (SerialCommunication/):
-- Open SerialCommunication.slnx in Visual Studio and build/run from the IDE
-- No command-line build targets provided; Visual Studio handles compilation and execution
-- No tests present
+Key conventions and patterns
+- String flash optimisation: code uses the F("...") macro for flash-stored strings. Preserve this pattern when adding messages.
+- Serial abstraction: .ino defines SerialPort (macro) and Baudrate at top; use these rather than direct Serial/baud constants when modifying the sketch.
+- Command syntax: supported commands are:
+  - set d[2..4] [on|off|high|low|1|0]
+  - set pwm[9..11] [0..255]
+  - toggle d[2..4]
+  - get d[2..7]
+  - get a[0..5]
+  - ping, debug, help
+- Buffer and command limits: SERIALCOMMANDBUFFER = 32, MAXSERIALCOMMANDS = 10. Changing these requires rebuilding SerialCommand library code.
+- Debug flag: SERIALCOMMANDDEBUG is explicitly #undef'ed in SerialCommand.h. Enable debugging by commenting out the #undef.
+- Input handling: only printable characters are buffered; terminator (term) is used to mark end of command. Handlers should call sCmd.clearBuffer() when appropriate.
 
-## High-level architecture
+Files to inspect for implementation details
+- arduino/SerialCommunication/SerialCommunication.ino
+- arduino/SerialCommunication/SerialCommand.h
+- arduino/SerialCommunication/SerialCommand.cpp
+- arduino/SerialCommunication/analog.c
 
-**Arduino side:**
-- Type: Arduino sketch using an embedded SerialCommand library (SerialCommand.h/.cpp) for command tokenization and routing
-- Entry points: setup() initializes pins (digital 2-4 as OUTPUT, digital 5-7 as INPUT, PWM 9-11 as OUTPUT, analog A0-A5 as INPUT) and registers command handlers; loop() calls sCmd.readSerial() to process incoming commands
-- Command execution: SerialCommand parses input and invokes handlers (onSet, onToggle, onGet, onPing, onHelp, onDebug)
-- analog.c provides analogReadDelay() helper used by onGet to sample analog pins with configurable delay
+AI / assistant config
+- No CLAUDE.md, .cursorrules, AGENTS.md, .windsurfrules, CONVENTIONS.md, AIDER_CONVENTIONS.md, .clinerules or README files were found. Add repository-specific rules here if you want Copilot to follow additional conventions.
 
-**Desktop application side:**
-- Windows Forms app (Form1.cs) provides a UI to send commands and display responses
-- Uses System.IO.Ports.SerialPort for communication
-- Form1_Load() discovers available COM ports; combobox dropdown updates port list on demand
-- Serial port settings must match Arduino (115200 baud default)
+After creating this file: would you like an MCP server configured for this project (for example, an embedded device test harness)?
 
-## Key conventions and patterns
-
-**Arduino code:**
-- String flash optimisation: Use F("...") macro for flash-stored strings to preserve RAM. Maintain this pattern in all new messages
-- Serial abstraction: Top-level macros define SerialPort and Baudrate; use these rather than direct Serial/115200 constants
-- Command syntax reference:
-  - `set d[2..4] [on|off|high|low|1|0]` – set digital pin
-  - `set pwm[9..11] [0..255]` – set PWM value
-  - `toggle d[2..4]` – toggle digital pin
-  - `get d[2..7]` – read digital pin
-  - `get a[0..5]` – read analog pin (returns 0–1023)
-  - `ping`, `debug`, `help`
-- Buffer limits: SERIALCOMMANDBUFFER = 32, MAXSERIALCOMMANDS = 10. Changing these requires rebuilding SerialCommand
-- Debug flag: SERIALCOMMANDDEBUG is explicitly #undef'ed in SerialCommand.h. Comment out the #undef to enable
-- Input handling: Only printable characters are buffered; terminator marks command end. Handlers call sCmd.clearBuffer() when needed
-- Helper functions: isValidNumber() validates numeric strings; startsWith() checks command prefixes
-
-**C# desktop app:**
-- Uses .NET Framework 4.7.2 (see SerialCommunication.csproj)
-- UI components are defined in Form1.Designer.cs (auto-generated); edit Form1.cs for logic only
-- Serial port discovery: GetPortNames() returns available ports; combobox updates on dropdown expansion
-- Exception handling: Generic try-catch blocks (no specific error logging); safe to extend with better error handling
-
-## Files to inspect for implementation details
-
-- arduino/SerialCommunication/SerialCommunication.ino – main sketch, command handlers
-- arduino/SerialCommunication/SerialCommand.h – command library header and configuration
-- arduino/SerialCommunication/SerialCommand.cpp – command library implementation
-- arduino/SerialCommunication/analog.c – analog read with delay helper
-- SerialCommunication/Form1.cs – desktop app logic
-- SerialCommunication/Form1.Designer.cs – desktop app UI (auto-generated, do not edit)
-- SerialCommunication/Program.cs – entry point (STAThread main)
+Summary
+- Created concise Copilot instructions describing how to build, where to look for architecture, and repository-specific conventions. Reply if you want any area expanded or additional commands added.
