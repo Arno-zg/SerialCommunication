@@ -133,23 +133,6 @@ namespace SerialCommunication
         {
             try
             {
-                if (serialPortArduino.IsOpen)
-                {
-                    string command = textBoxCommand.Text.Trim();
-                    if (!string.IsNullOrEmpty(command))
-                    {
-                        serialPortArduino.WriteLine(command);
-                        labelStatus.Text = "Sent: " + command;
-                    }
-                    else
-                    {
-                        labelStatus.Text = "Error: Command cannot be empty";
-                    }
-                }
-                else
-                {
-                    labelStatus.Text = "Error: Not connected to serial port";
-                }
             }
             catch (Exception exception)
             {
@@ -162,11 +145,7 @@ namespace SerialCommunication
             try
             {
                 string data = serialPortArduino.ReadLine();
-                this.Invoke(new MethodInvoker(delegate
-                {
-                    listBoxResponses.Items.Add("Response: " + data);
-                    listBoxResponses.TopIndex = listBoxResponses.Items.Count - 1;
-                }));
+              
             }
             catch { }
         }
