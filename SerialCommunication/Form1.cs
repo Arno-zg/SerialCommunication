@@ -5,6 +5,8 @@ using System.Data;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -300,6 +302,7 @@ namespace SerialCommunication
             timerOefening3.Enabled = (tabControl.SelectedIndex == 3);
             timerOefening4.Enabled = (tabControl.SelectedIndex == 4);
             timerOefening5.Enabled = (tabControl.SelectedIndex == 5);
+            timerTemperatuurAlarm.Enabled = (tabControl.SelectedIndex == 6);
         }
 
         private void timerOefening3_Tick(object sender, EventArgs e)
@@ -450,6 +453,130 @@ namespace SerialCommunication
             }
 
             return true;
+        }
+
+        int toestand = 0; //0 OK, 1 ALARM, 2 BEVESTIGD
+
+        private void timerTemperatuurAlarm_Tick(object sender, EventArgs e)
+        {
+
+            try
+            {
+                if (IsArduinoConnected())
+                {
+
+                    double temperatuur = 0.0;
+                    double temperatuurHuidig = 0.0;
+
+                    serialPortArduino.ReadExisting();
+                    string commando = "get a0";
+                    serialPortArduino.WriteLine(commando);
+                    string antwoord = serialPortArduino.ReadLine();
+                    antwoord = antwoord.TrimEnd();
+                    antwoord = antwoord.Substring(4);
+
+                    int value = Int32.Parse(antwoord);
+                    temperatuur = (value * 70.0 / 1023.0) - 10.0;
+                    labelAlarmTemp.Text = $"{temperatuur:F1} °C";
+
+                    serialPortArduino.ReadExisting();
+                    string commando2 = "get a1";
+                    serialPortArduino.WriteLine(commando2);
+                    string antwoord2 = serialPortArduino.ReadLine();
+                    antwoord2 = antwoord2.TrimEnd();
+                    antwoord2 = antwoord2.Substring(4);
+
+                    int valueA1 = Int32.Parse(antwoord2);
+                    temperatuurHuidig = (valueA1 * 500.0 / 1023.0);
+                    labelHuidigeTempOef6.Text = $"{temperatuurHuidig:F1} °C";
+
+                    serialPortArduino.ReadExisting();
+                    string commando3 = "get d5";
+                    serialPortArduino.WriteLine(commando3);
+                    string antwoord3 = serialPortArduino.ReadLine();
+                    antwoord3 = antwoord3.TrimEnd();
+                    antwoord3 = antwoord3.Substring(4);
+                    // antwoord3 converteren naar boolean en in lokale variaele buttonBevestig opslaan
+                    bool buttonBevestig = (antwoord3 == "1");
+                    /*
+                    if (buttonBevestig)
+                    {
+                        labelStatusOef6.Text = "OK";
+                    }
+                    else {       
+                        labelStatusOef6.Text = "NOK";
+                    }
+                    */
+
+                    //als de opstelling in toestand OK staat EN de huidige temperatuur is groter dan of gelijk aan de alarm waarde dan
+                    //verander je de toestand naar ALARM.
+                    //Je doet dit door de globale variabele toestand de waarde 1 toe te kennen.
+
+                    if (toestand == 0 && temperatuurHuidig >= temperatuur)
+                    {
+                        toestand = 1; //ALARM
+                    }
+
+                    //als de opstelling in toestand ALARM staat EN de drukknop is bediend...
+                    //als de huidige temperatuur kleiner is dan de alarm waarde dan verander je de toestand naar OK
+                    //anders verander je de toestand naar BEVESTIGD
+
+                    if (toestand == 1 && buttonBevestig)
+                    {
+                        if (temperatuurHuidig < temperatuur)
+                        {
+                            toestand = 0; //OK
+                        }
+                        else
+                        {
+                            toestand = 2; //BEVESTIGD
+                        }
+                    }
+
+                    //als de opstelling in toestand BEVESTIGD staat EN
+                    //de huidige temperatuur is kleiner dan de alarm waarde dan verander je de toestand naar OK
+
+                    if (toestand == 2 && temperatuurHuidig < temperatuur)
+                    {
+                        toestand = 0; //OK
+                    }
+
+                    if (toestand == 0)
+                    {
+                        labelStatusOef6.Text = "OK";
+                        serialPortArduino.ReadExisting();
+                        serialPortArduino.WriteLine("set d2 low");
+                        serialPortArduino.WriteLine("set d5 low");
+                    }
+                    else if (toestand == 1)
+                    {
+                        labelStatusOef6.Text = "ALARM";
+                        serialPortArduino.ReadExisting();
+                        serialPortArduino.WriteLine("set d2 high");
+                        serialPortArduino.WriteLine("set d3 high");
+                    }
+                    else if (toestand == 2)
+                    {
+                        labelStatusOef6.Text = "BEVESTIGD";
+                        serialPortArduino.ReadExisting();
+                        serialPortArduino.WriteLine("set d2 high");
+                        serialPortArduino.WriteLine("set d3 low");
+                    }
+
+
+                }
+                else throw new Exception("Not connected to serial port");
+            }
+
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Error: " + exception.Message;
+                serialPortArduino.Close();
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+                timerOefening5.Enabled = false;
+            }
+
         }
     }
     }

@@ -102,6 +102,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.timerTemperatuurAlarm = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -994,6 +995,10 @@
             this.label13.TabIndex = 6;
             this.label13.Text = "Status";
             // 
+            // timerTemperatuurAlarm
+            // 
+            this.timerTemperatuurAlarm.Tick += new System.EventHandler(this.timerTemperatuurAlarm_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -1120,6 +1125,7 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Timer timerTemperatuurAlarm;
     }
 }
 
